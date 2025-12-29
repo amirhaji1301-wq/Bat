@@ -1,0 +1,69 @@
+# Bat
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>مسیر پاکی</title><script src="https://cdn.tailwindcss.com"></script><script src="https://www.google.com/search?q=https://unpkg.com/react%4018/umd/react.production.min.js"></script><script src="https://www.google.com/search?q=https://unpkg.com/react-dom%4018/umd/react-dom.production.min.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><link href="https://www.google.com/search?q=https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css" rel="stylesheet"><style>@keyframes dash { to { stroke-dashoffset: 0; } }body {background-color: #050505;color: white;margin: 0;font-family: system-ui, -apple-system, sans-serif;overflow: hidden;touch-action: manipulation;}.bg-noise {background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='https://www.google.com/search?q=http://www.w3.org/2000/svg%27%253E%253Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");}* { -webkit-tap-highlight-color: transparent; }</style></head><body><div id="root"></div><script type="text/babel">const { useState, useEffect } = React;function App() {const [streak, setStreak] = useState(0);const [isCheckedInToday, setIsCheckedInToday] = useState(false);const [isAnimating, setIsAnimating] = useState(false);        useEffect(() => {
+            const savedStreak = localStorage.getItem('habit_streak');
+            const savedLastDate = localStorage.getItem('habit_last_date');
+            if (savedStreak) setStreak(parseInt(savedStreak));
+            if (savedLastDate) {
+                const today = new Date().toDateString();
+                if (today === new Date(savedLastDate).toDateString()) setIsCheckedInToday(true);
+            }
+        }, []);
+
+        const handleCheckIn = () => {
+            if (isCheckedInToday || isAnimating) return;
+            setIsAnimating(true);
+            setTimeout(() => {
+                const newStreak = streak + 1;
+                const now = new Date();
+                setStreak(newStreak);
+                setIsCheckedInToday(true);
+                localStorage.setItem('habit_streak', newStreak);
+                localStorage.setItem('habit_last_date', now.toISOString());
+                setIsAnimating(false);
+            }, 1500);
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col items-center relative overflow-hidden select-none">
+                <div className="fixed inset-0 bg-noise pointer-events-none opacity-40"></div>
+                <header className="w-full p-6 flex justify-between items-center z-10">
+                    <div className="flex items-center gap-2 text-teal-500/80">
+                        <i data-lucide="shield-check" className="w-5 h-5"></i>
+                        <span className="text-[10px] font-bold tracking-[0.3em] uppercase">مسیر پاکی</span>
+                    </div>
+                </header>
+                <main className="flex-1 flex flex-col items-center justify-center w-full z-10 px-4">
+                    <div className="mb-12 text-center h-20 flex flex-col justify-end">
+                        <h2 className={`text-2xl font-light transition-all duration-700 ${isCheckedInToday ? 'text-teal-400' : 'text-white'}`}>
+                            {isCheckedInToday ? "امروز ثبت شد" : "روزِ خود را ثبت کن"}
+                        </h2>
+                    </div>
+                    <div className="relative flex items-center justify-center">
+                        {!isCheckedInToday && !isAnimating && (
+                            <div className="absolute w-56 h-56 border border-teal-500/20 rounded-full animate-ping"></div>
+                        )}
+                        <button onClick={handleCheckIn} className={`relative w-64 h-64 rounded-full flex flex-col items-center justify-center transition-all duration-500 border ${isCheckedInToday ? 'border-teal-500/50 shadow-[0_0_40px_rgba(20,184,166,0.1)]' : 'bg-[#0A0A0A] border-neutral-800 active:scale-95'}`}>
+                            {isAnimating && (
+                                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="48" fill="none" stroke="#14b8a6" strokeWidth="2" strokeDasharray="301.6" strokeDashoffset="301.6" style={{animation: 'dash 1.5s linear forwards'}} />
+                                </svg>
+                            )}
+                            <div className="flex flex-col items-center">
+                                <span className={`text-7xl font-light tracking-tighter ${isCheckedInToday ? 'text-teal-400' : 'text-neutral-600'}`}>{streak}</span>
+                                <span className="text-neutral-500 text-[10px] mt-2 uppercase tracking-[0.4em]">روز</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div className="mt-16 text-neutral-500 text-sm font-light italic text-center max-w-[250px]">
+                        {streak === 0 ? "اولین قدم، مهم‌ترین قدم است." : "تو قوی‌تر از تمایلاتت هستی."}
+                    </div>
+                </main>
+                <footer className="w-full p-8 text-center z-10 opacity-30 text-[10px] tracking-widest uppercase">تداوم، کلید پیروزی است</footer>
+            </div>
+        );
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+    setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 500);
+</script>
+</body></html>
